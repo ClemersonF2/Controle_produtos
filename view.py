@@ -2,9 +2,6 @@ import sqlite3 as lite
 
 con = lite.connect('pesagem.db')
 
-'''def calcular_peso(peso_bruto)'''
-
-
 # inserir dados
 
 def inserir_form(i):
@@ -18,7 +15,7 @@ def inserir_form(i):
 def atualizar_form(i):
    with con: 
        cur = con.cursor()
-       query = "UPDATE produto SET nome=?, codigo=?, nota_fiscal=?, data_recebimento=?, peso_liquido=? WHERE id=?"
+       query = "UPDATE produto SET nome=?, codigo=?, Peso_liquido=?, data_recebimento=?, nota_fiscal=? WHERE id=?"
        cur.execute(query,i)
 
 

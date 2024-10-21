@@ -8,12 +8,12 @@ from view import*
 from tkinter import messagebox
 
 
-
 #cores
 co0 = "#038cfc" # azul 
 co1 = "#e9edf5" # branco
 co2 = "#feffff" # cinza
 co3 = "#403d3d" # preto
+co4 = "#3CB371" # verde
 
 # criando janela
 
@@ -39,7 +39,7 @@ frameBaixo.grid(row=2, column=0, pady=0, padx=1, sticky=NSEW)
 
 # criando funcoes--------------------------------------------------------------------------------------------------------------------------------------------------
 global tree
-# funcao inserir
+# funcao inserir---------------------------------------------------------------------------------------------------------------------------------------------------
 def inserir():
     
     nome = e_nome.get()
@@ -66,7 +66,7 @@ def inserir():
     e_peso.delete(0,'end')
 
     mostrar()
-# funcao atulizar
+# funcao atulizar--------------------------------------------------------------------------------------------------------------------------------------------------
 def atualizar():
    try:
       treev_dados = tree.focus()
@@ -122,14 +122,32 @@ def atualizar():
         mostrar()
         
        
-      b_confirmar = Button(frameMeio, command= update ,width=13, text='CONFIRMAR'.upper(),overrelief=RIDGE, font=('Ivy 8 bold'), bg=co2, fg=co3)
+      b_confirmar = Button(frameMeio, command= update ,width=13, text='CONFIRMAR'.upper(),overrelief=RIDGE, font=('Ivy 8 bold'), bg=co4, fg=co2)
       b_confirmar.place(x=330, y=185)
 
 
 
    except IndexError:
        messagebox.showerror('Error','Seleciona um dos dados na tabela')
-       
+# funsao deletar --------------------------------------------------------------------------------------------------------------------------------------------------
+def deletar():
+  try:
+        treev_dados = tree.focus()
+        treev_dicionario =tree.item(treev_dados)
+        treev_lista = treev_dicionario['values']
+        valor = treev_lista[0] 
+
+        deletar_form([valor])    
+
+    
+        messagebox.showinfo('Sucesso','Os dados foram deletados com sucesso')
+
+
+        mostrar()
+
+  except IndexError:
+     messagebox.showerror('Erro','Seleciona um dos dados na tabela')
+
 # Abrindo imagem ---------------------------------------------------------------------------------------------------------------------------------------------------
 app_img = Image.open('balanca.png')
 app_img = app_img.resize((45,45))
@@ -150,7 +168,7 @@ l_codigo.place(x=10, y=40)
 e_codigo = Entry(frameMeio, width=30, justify='left', relief=SOLID)
 e_codigo.place(x=130, y=41)
 
-l_notaFiscal = Label(frameMeio, text='PESO LIQUIDO', height=1, anchor=NW, font=('Ivy 10 bold'), bg=co2, fg=co3)
+l_notaFiscal = Label(frameMeio, text='NOTA FISCAL', height=1, anchor=NW, font=('Ivy 10 bold'), bg=co2, fg=co3)
 l_notaFiscal.place(x=10, y=70)
 e_notaFiscal = Entry(frameMeio, width=30, justify='left', relief=SOLID)
 e_notaFiscal.place(x=130, y=71)
@@ -160,11 +178,10 @@ l_cal.place(x=10, y=100)
 e_cal= DateEntry(frameMeio, width=12, Background='darkblue', bordewidth=2, year=2024) 
 e_cal.place(x=130, y=101)
 
-l_peso = Label(frameMeio, text='NOTA FISCAL', height=1, anchor=NW, font=('Ivy 10 bold'), bg=co2, fg=co3)
+l_peso = Label(frameMeio, text='PESO LIQUIDO', height=1, anchor=NW, font=('Ivy 10 bold'), bg=co2, fg=co3)
 l_peso.place(x=10, y=130)
 e_peso = Entry(frameMeio, width=30, justify='left', relief=SOLID)
 e_peso.place(x=130, y=131)
-
 
 # botao inserir----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -181,7 +198,7 @@ img_delete = Image.open('sinal_delete.png')
 img_delete= img_delete.resize((20,20))
 img_delete = ImageTk.PhotoImage(img_delete)
 
-b_delete = Button(frameMeio, image=img_delete,width=95, text='  DELETAR'.upper(),compound=LEFT, anchor=NW, overrelief=RIDGE, font=('Ivy 8'), bg=co2, fg=co3)
+b_delete = Button(frameMeio,command=deletar, image=img_delete,width=95, text='  DELETAR'.upper(),compound=LEFT, anchor=NW, overrelief=RIDGE, font=('Ivy 8'), bg=co2, fg=co3)
 b_delete.place(x=330, y=50)
 
 # botao atulizar--------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -210,23 +227,18 @@ l_total.place(x=500, y=17)
 l_total_ = Label(frameMeio, text='       QUANTIDADE TOTAL DE ITENS      ', height=1, anchor=NW, font=('Ivy 10 bold'), bg=co0, fg=co2)
 l_total_.place(x=500, y=12)
 
-
-
 #tabela parte de baixo----------------------------------------------------------------------------------------------------------------------------------------------------
 def mostrar():
    global tree
 
-   tabela_head = ['#ITEM','PRODUTO',  'CODIGO','NOTA FISCAL', 'DATA DE RECEBIMENTO', 'PESO LIQUIDO']
+   tabela_head = ['#ITEM','PRODUTO',  'CODIGO','PESO LIQUIDO', 'DATA DE RECEBIMENTO', 'NOTA FISCAL']
 
    lista_itens = ver_form()
 
    tree = ttk.Treeview(frameBaixo, selectmode="extended",columns=tabela_head, show="headings")
-
    #vertical scroll
    vsb = ttk.Scrollbar(frameBaixo, orient="vertical", command=tree.yview)
-
    #horizontal scroll
-
    hsb = ttk.Scrollbar(frameBaixo, orient="horizontal", command=tree.xview)
 
    tree.configure(yscrollcommand=vsb.set, xscrollcommand=hsb.set)
@@ -243,7 +255,6 @@ def mostrar():
     tree.heading(col, text=col.title(), anchor=CENTER)
     tree.column(col, width=h[n],anchor=hd[n])
     n+=1
-
 
   #inserindo os itens dentro da tabela
    for item in lista_itens:
